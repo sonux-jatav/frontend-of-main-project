@@ -16,7 +16,7 @@ const McqPractice = () => {
   useEffect(() => {
     if (!token) return navigate('/login');
     axios
-      .get('/api/mcq', { headers: { Authorization: `Bearer ${token}` } })
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/mcq`, { headers: { Authorization: `Bearer ${token}` } })
       .then((res) => setMcqs(res.data))
       .catch((err) => {
         if (err.response?.status === 401) dispatch(logout());
@@ -32,7 +32,7 @@ const McqPractice = () => {
     if (!answers[mcqId]) return alert('Please select an answer for this MCQ');
     try {
       const res = await axios.post(
-        '/api/mcq/submit',
+        `${process.env.REACT_APP_BACKEND_URL}/api/mcq/submit`,
         { answers: [{ id: mcqId, selected: answers[mcqId] }] },
         { headers: { Authorization: `Bearer ${token}` } }
       );

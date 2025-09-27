@@ -1,26 +1,31 @@
-import { useState, useEffect } from 'react'
-import axios from 'axios'
-import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../features/auth/authSlice'
-import { useNavigate } from 'react-router-dom'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
+// frontend/src/components/Progress.jsx
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../features/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Progress = () => {
-  const { token } = useSelector(state => state.auth)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [submissions, setSubmissions] = useState([])
+  const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [submissions, setSubmissions] = useState([]);
 
   useEffect(() => {
-    if (!token) return navigate('/login')
-    axios.get('/api/progress', { headers: { Authorization: `Bearer ${token}` } })
-      .then(res => setSubmissions(res.data))
-      .catch(err => {
-        if (err.response.status === 401) dispatch(logout())
-      })
-  }, [token, navigate, dispatch])
+    if (!token) return navigate('/login');
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/progress`, { headers: { Authorization: `Bearer ${token}` } })
+      .then((res) => setSubmissions(res.data))
+      .catch((err) => {
+        if (err.response?.status === 401) dispatch(logout());
+      });
+  }, [token, navigate, dispatch]);
 
-  const chartData = submissions.filter(s => s.problemType === 'mcq').map(s => ({ date: new Date(s.timestamp).toLocaleDateString(), score: s.score }))
+  const chartData = submissions.filter((s) => s.problemType === 'mcq').map((s) => ({
+    date: new Date(s.timestamp).toLocaleDateString(),
+    score: s.score,
+  }));
 
   return (
     <div className="p-8">
@@ -46,7 +51,7 @@ const Progress = () => {
           </tr>
         </thead>
         <tbody>
-          {submissions.map(sub => (
+          {submissions.map((sub) => (
             <tr key={sub._id}>
               <td>{sub.problemType}</td>
               <td>{sub.score || sub.result}</td>
@@ -57,7 +62,7 @@ const Progress = () => {
         </tbody>
       </table>
     </div>
-  )
-}
+  );
+};
 
-export default Progress
+export default Progress;

@@ -1,4 +1,3 @@
-// frontend/src/components/CodingPractice.jsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import Editor from '@monaco-editor/react';
@@ -20,7 +19,7 @@ const CodingPractice = () => {
   useEffect(() => {
     if (!token) return navigate('/login');
     axios
-      .get('/api/coding', {
+      .get(`${process.env.REACT_APP_BACKEND_URL}/api/coding`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { companyTag: selectedCompany },
       })
@@ -35,7 +34,7 @@ const CodingPractice = () => {
     if (!selectedProblem || !code.trim()) return alert('Please select a problem and write code');
     try {
       const res = await axios.post(
-        '/api/coding/submit',
+        `${process.env.REACT_APP_BACKEND_URL}/api/coding/submit`,
         { problemId: selectedProblem._id, code, languageId },
         { headers: { Authorization: `Bearer ${token}` } }
       );

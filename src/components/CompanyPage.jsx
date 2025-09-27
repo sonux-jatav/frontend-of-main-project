@@ -1,4 +1,3 @@
-// frontend/src/component/companyPage.jsx
 import { useParams, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -27,7 +26,7 @@ const CompanyPage = () => {
     else if (selectedCategory === 'interview') endpoint = '/api/interview';
 
     axios
-      .get(`${endpoint}?companyTag=${company}`, headers)
+      .get(`${process.env.REACT_APP_BACKEND_URL}${endpoint}?companyTag=${company}`, headers)
       .then((res) => setItems(res.data))
       .catch((err) => {
         if (err.response?.status === 401) dispatch(logout());
@@ -40,14 +39,14 @@ const CompanyPage = () => {
   };
 
   const handleSubmit = async (itemId) => {
-    const selectedItem = items.find(item => item._id === itemId);
+    const selectedItem = items.find((item) => item._id === itemId);
     if (!selectedItem) return alert('Item not found');
 
     if (selectedCategory === 'coding') {
       if (!code.trim()) return alert('Please write code');
       try {
         const res = await axios.post(
-          '/api/coding/submit',
+          `${process.env.REACT_APP_BACKEND_URL}/api/coding/submit`,
           { problemId: itemId, code, languageId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -60,7 +59,7 @@ const CompanyPage = () => {
       if (!answers[itemId]) return alert('Please select an answer');
       try {
         const res = await axios.post(
-          '/api/mcq/submit',
+          `${process.env.REACT_APP_BACKEND_URL}/api/mcq/submit`,
           { answers: [{ id: itemId, selected: answers[itemId] }] },
           { headers: { Authorization: `Bearer ${token}` } }
         );

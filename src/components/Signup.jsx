@@ -15,7 +15,7 @@ const Signup = () => {
     e.preventDefault();
     console.log('Submitting:', { name, email, password }); // Debug log
     try {
-      const res = await axios.post('/api/auth/signup', { name, email, password });
+      const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/auth/signup`, { name, email, password });
       setMessage(res.data.message);
       setTimeout(() => navigate('/login'), 3000);
     } catch (err) {
